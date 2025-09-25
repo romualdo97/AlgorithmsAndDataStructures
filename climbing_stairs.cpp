@@ -207,30 +207,57 @@ int NoRecursiveWithMemoization(int InitialStair)
     return OutPaths;
 }
 
+int CalculateFibonacci(int InitialStair)
+{
+    static constexpr int MemoizationSize = 2;
+    int Memoization[MemoizationSize]
+    {
+        0, 1
+    };
+
+    int i = 2;
+    while (i <= InitialStair)
+    {
+        Memoization[i % MemoizationSize] =
+            Memoization[(i - 1) % MemoizationSize] +
+            Memoization[(i - 2) % MemoizationSize];
+        ++i;
+    }
+
+    return Memoization[(i - 1) % MemoizationSize];
+}
+
 int main()
 {
     // ReSharper disable once CppTooWideScope
-    int NumStairs = 46;
+    int NumStairs = 45;
     printf("%d stairs\n", NumStairs);
     
     {
-        ScopedWallStopwatch Stopwatch;
+        ScopedWallStopwatch Stopwatch; // ~35'000'000us
         printf(">> NoRecursiveBruteForce\n");
         int Paths = NoRecursiveBruteForce(NumStairs);
         printf("%d paths\n", Paths);
     }
     
     {
-        ScopedWallStopwatch Stopwatch;
+        ScopedWallStopwatch Stopwatch; // ~2'000'000u
         printf(">> NoRecursiveWithStaticTable\n");
         int Paths = NoRecursiveWithStaticTable(NumStairs);
         printf("%d paths\n", Paths);
     }
-
+    
     {
-        ScopedWallStopwatch Stopwatch;
+        ScopedWallStopwatch Stopwatch; // ~5us
         printf(">> NoRecursiveWithMemoization\n");
         int Paths = NoRecursiveWithMemoization(NumStairs);
+        printf("%d paths\n", Paths);
+    }
+
+    {
+        ScopedWallStopwatch Stopwatch; // ~0us
+        printf(">> CalculateFibonacci\n");
+        int Paths = CalculateFibonacci(NumStairs);
         printf("%d paths\n", Paths);
     }
 }
