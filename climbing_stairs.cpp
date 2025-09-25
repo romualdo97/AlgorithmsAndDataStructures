@@ -227,37 +227,98 @@ int CalculateFibonacci(int InitialStair)
     return Memoization[(i - 1) % MemoizationSize];
 }
 
+int Walk(int m, int n)
+{
+    static int TotalPaths = 0;
+    // printf("Walk (%d, %d)\n", m, n);
+
+    if (m == 1 && n == 1)
+    {
+        ++TotalPaths;
+    }
+
+    if (m > 1)
+    {
+        Walk(m - 1, n);
+    }
+
+    if (n > 1)
+    {
+        Walk(m, n - 1);        
+    }
+
+    return TotalPaths;
+}
+
+int WalkNotTraversingPathFully(int m, int n)
+{
+    static int TotalPaths = 0;
+    // printf("Walk (%d, %d)\n", m, n);
+
+    if (m == 1 || n == 1)
+    {
+        ++TotalPaths;
+        return -1;
+    }
+
+    if (m > 1)
+    {
+        WalkNotTraversingPathFully(m - 1, n);
+    }
+
+    if (n > 1)
+    {
+        WalkNotTraversingPathFully(m, n - 1);        
+    }
+
+    return TotalPaths;
+}
+
 int main()
 {
     // ReSharper disable once CppTooWideScope
     int NumStairs = 45;
     printf("%d stairs\n", NumStairs);
     
-    {
-        ScopedWallStopwatch Stopwatch; // ~35'000'000us
-        printf(">> NoRecursiveBruteForce\n");
-        int Paths = NoRecursiveBruteForce(NumStairs);
-        printf("%d paths\n", Paths);
-    }
-    
-    {
-        ScopedWallStopwatch Stopwatch; // ~2'000'000u
-        printf(">> NoRecursiveWithStaticTable\n");
-        int Paths = NoRecursiveWithStaticTable(NumStairs);
-        printf("%d paths\n", Paths);
-    }
-    
-    {
-        ScopedWallStopwatch Stopwatch; // ~5us
-        printf(">> NoRecursiveWithMemoization\n");
-        int Paths = NoRecursiveWithMemoization(NumStairs);
-        printf("%d paths\n", Paths);
-    }
+    // {
+    //     ScopedWallStopwatch Stopwatch; // ~35'000'000us
+    //     printf(">> NoRecursiveBruteForce\n");
+    //     int Paths = NoRecursiveBruteForce(NumStairs);
+    //     printf("%d paths\n", Paths);
+    // }
+    //
+    // {
+    //     ScopedWallStopwatch Stopwatch; // ~2'000'000u
+    //     printf(">> NoRecursiveWithStaticTable\n");
+    //     int Paths = NoRecursiveWithStaticTable(NumStairs);
+    //     printf("%d paths\n", Paths);
+    // }
+    //
+    // {
+    //     ScopedWallStopwatch Stopwatch; // ~5us
+    //     printf(">> NoRecursiveWithMemoization\n");
+    //     int Paths = NoRecursiveWithMemoization(NumStairs);
+    //     printf("%d paths\n", Paths);
+    // }
+    //
+    // {
+    //     ScopedWallStopwatch Stopwatch; // ~0us
+    //     printf(">> CalculateFibonacci\n");
+    //     int Paths = CalculateFibonacci(NumStairs);
+    //     printf("%d paths\n", Paths);
+    // }
 
     {
-        ScopedWallStopwatch Stopwatch; // ~0us
-        printf(">> CalculateFibonacci\n");
-        int Paths = CalculateFibonacci(NumStairs);
+        ScopedWallStopwatch Stopwatch;
+        printf(">> WalkingRobot\n");
+        int Paths = Walk(17, 18);
+        printf("%d paths\n", Paths);
+    }
+    
+    {
+        ScopedWallStopwatch Stopwatch;
+        printf(">> WalkNotTraversingPathFully\n");
+        int Paths = WalkNotTraversingPathFully(17, 18);
         printf("%d paths\n", Paths);
     }
 }
