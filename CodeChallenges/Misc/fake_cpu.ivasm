@@ -1,0 +1,41 @@
+; write 1..5 to RAM[100..104]
+MOV R0, 1
+MOV R1, 100
+STORE [R1], R0
+ADD R0, 1
+ADD R1, 1
+STORE [R1], R0
+ADD R0, 1
+ADD R1, 1
+STORE [R1], R0
+ADD R0, 1
+ADD R1, 1
+STORE [R1], R0
+ADD R0, 1
+ADD R1, 1
+STORE [R1], R0
+
+; sum RAM[100..104] into R0
+MOV R0, 0        ; accumulator
+MOV R1, 100      ; pointer
+MOV R2, 5        ; count
+
+sum_loop:
+LOAD R3, [R1]    ; R3 = *R1
+ADD R0, R3       ; acc += value
+ADD R1, 1        ; next cell
+SUB R2, 1        ; decrement count
+JNZ R2, sum_loop
+
+PRINT R0
+HALT
+
+
+;STORE []
+;MOV R0, 10000
+; PRINT R0
+;LOOP_START_LABEL:
+;SUB R0, 1
+;PRINT R0
+;JNZ R0, LOOP_START_LABEL
+;HALT
