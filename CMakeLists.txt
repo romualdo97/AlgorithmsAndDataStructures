@@ -3,4 +3,4 @@ project(CodeExperiments)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(CodeExperiments CodeChallenges/Misc/fake_cpu.cpp)
+add_executable(CodeExperiments Threading/false_sharing.cpp)
