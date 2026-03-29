@@ -3,4 +3,4 @@ project(CodeExperiments)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(CodeExperiments Threading/false_sharing.cpp)
+add_executable(CodeExperiments Threading/cache_associativity.cpp)
