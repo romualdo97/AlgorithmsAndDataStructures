@@ -3,4 +3,4 @@ project(CodeExperiments)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(CodeExperiments Threading/gcc_intrinsics_atomics.cpp)
+add_executable(CodeExperiments Threading/rwlock_experiments.cpp)
