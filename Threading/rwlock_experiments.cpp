@@ -232,15 +232,25 @@ int main()
                 // std::this_thread::sleep_for(std::chrono::seconds(1));
                 for (int Index = 0; Index < 1'000'000'000; ++Index)
                 {
-                    // This will generate a lot of contention and traffic                    
-                    ReaderWriterMutex.ReadLock();
+                    // [Program execution is about 40min]
+                    // This will generate a lot of contention and traffic                   
+                    //ReaderWriterMutex.ReadLock();
                     // Protected read
-                    ReaderWriterMutex.ReadUnlock();
+                    //ReaderWriterMutex.ReadUnlock();
 
+                    // [Program execution is about 6s]
                     // Ideally each physical core interacts with their local cache without invalidating other caches
-                    //FatReadWriterMutex.ReadLock(i);
+                    FatReadWriterMutex.ReadLock(i);
                     // Protected read
-                    //FatReadWriterMutex.ReadUnlock(i);
+                    FatReadWriterMutex.ReadUnlock(i);
+
+                    if (i == 0 && Index == 10000000)
+                    {
+                        FScopedTimer WriteAcquire("WriteAcquireRelease");                            
+                        FatReadWriterMutex.WriteLock(i);
+                        std::printf("Write lock acquired\n");
+                        FatReadWriterMutex.WriteUnlock(i);
+                    }
                 }
             }) ;        
     }
