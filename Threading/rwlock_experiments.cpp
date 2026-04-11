@@ -6,6 +6,8 @@
 // Note: A bunch of important pieces of this code might get optimized out by the compiler, for now the experiment is assumed to be in debug builds
 // https://cs.opensource.google/go/go/+/refs/tags/go1.26.1:src/sync/rwmutex.go;l=39
 
+// Any metric related comment was captured using an Intel Core Ultra 285k
+
 #include <cstdio>
 #include <vector>
 #include <thread>
@@ -216,7 +218,7 @@ private:
 namespace
 {
     RWMutex ReaderWriterMutex;
-    FatRWMutex<24> FatReadWriterMutex;
+    FatRWMutex<24> FatReaderWriterMutex;
 }
 
 int main()
@@ -227,29 +229,28 @@ int main()
     for (int i = 0; i < 24; ++i)
     {
         Threads.emplace_back
-            ([i]()
+            ([threadId = i]()
             {
                 // std::this_thread::sleep_for(std::chrono::seconds(1));
                 for (int Index = 0; Index < 1'000'000'000; ++Index)
                 {
-                    // [Program execution is about 40min]
-                    // This will generate a lot of contention and traffic                   
-                    //ReaderWriterMutex.ReadLock();
+                    // [Program execution is about | ~35.5minutes | ~2134seconds | 2134543179microseconds]
+                    // This will generate a lot of contention and traffic in the interconnect       
+                    // ReaderWriterMutex.ReadLock();
                     // Protected read
-                    //ReaderWriterMutex.ReadUnlock();
+                    // ReaderWriterMutex.ReadUnlock();
 
-                    // [Program execution is about 6s]
+                    // [Program execution is about | ~6s | 6969313microseconds]
                     // Ideally each physical core interacts with their local cache without invalidating other caches
-                    FatReadWriterMutex.ReadLock(i);
+                    FatReaderWriterMutex.ReadLock(threadId);
                     // Protected read
-                    FatReadWriterMutex.ReadUnlock(i);
-
-                    if (i == 0 && Index == 10000000)
+                    FatReaderWriterMutex.ReadUnlock(threadId);
+                    if (threadId == 0 && Index == 10000000)
                     {
                         FScopedTimer WriteAcquire("WriteAcquireRelease");                            
-                        FatReadWriterMutex.WriteLock(i);
+                        FatReaderWriterMutex.WriteLock(threadId);
                         std::printf("Write lock acquired\n");
-                        FatReadWriterMutex.WriteUnlock(i);
+                        FatReaderWriterMutex.WriteUnlock(threadId);
                     }
                 }
             }) ;        
