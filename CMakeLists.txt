@@ -3,4 +3,4 @@ project(CodeExperiments)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(CodeExperiments Threading/rwlock_experiments.cpp)
+add_executable(CodeExperiments simd/hello_simd_vulkan_guide.cpp)
